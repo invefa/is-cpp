@@ -45,7 +45,7 @@ RefString::RefString(lstring lit, usize len) {
 	length = len;
 }
 
-RefString::RefString(StringMeta& meta) {
+RefString::RefString(StringMeta meta) {
 	data = meta.get_data();
 	length = meta.get_length();
 }

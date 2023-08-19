@@ -38,6 +38,7 @@ bool cmp::value::as_##_type::operator()(Value a, Value b) {return a._type == b._
 
 namespace dmp::value {
 
+//macro for value dump class and its implements.
 #define __ISL_GEN_VALUE_DMP_AS_INTEGER_CLASS(_type)\
 	class as_##_type { public:String operator()(Value val); }
 
@@ -62,6 +63,9 @@ namespace dmp::value {
 	__ISL_GEN_VALUE_DMP_AS_INTEGER_CLASS(ui32);
 	__ISL_GEN_VALUE_DMP_AS_INTEGER_CLASS(ui64);
 
+	__ISL_GEN_VALUE_DMP_AS_INTEGER_CLASS(f32);
+	__ISL_GEN_VALUE_DMP_AS_INTEGER_CLASS(f64);
+
 	__ISL_GEN_VALUE_DMP_AS_INTEGER_CLASS(ptr);
 
 	__ISL_GEN_VALUE_DMP_AS_TYPE_CLASS(str);
@@ -71,10 +75,9 @@ namespace dmp::value {
 union Value {
 
 	//basic pointer
-	is::cptr		ptr;
-	is::Value*		vp;
-	is::String*		sp;
-	is::RefString*	rsp;
+	is::cptr		ptr;	is::Value*		vp;
+	is::String*		sp;		is::RefString*	rsp;
+	is::String*		str;
 
 	//integer pointer
 	is::i8* ip8;	is::i16* ip16;	is::i32* ip32;	is::i64* ip64;
@@ -87,22 +90,21 @@ union Value {
 	//float number
 	is::f32 f32;	is::f64 f64;
 
+	//basic constructor
 	Value();
-	//explicit Value(is::cptr _ptr);
-	//explicit Value(is::f64 _real);
-	//explicit Value(is::i64 _int);
-	//explicit Value(is::ui64 _uint);
-	//explicit Value(is::String& _str);
-	//explicit Value(is::RefString& _refstr);
 
+	//Here are just two simple comparison methods.
 	bool is_equal(is::ui64 another);
 	bool is_equal(is::StringMeta another);
-	//bool is_equal(is::Value another,
-	//				bool (*cmp_fn)(Value, Value) = is::cmp::value::as_i64_fn);
 
+	//It is used to determine whether another instance has the same value as
+	//the current instance under the specified judgment method.
+	//If the value is the same, it returns true.
 	template<class method = cmp::value::as_i64>
 	bool is_equal(is::Value another) { return method()(*this, another); }
 
+	//The dump function serves as a tool for outputting specific
+	//structured text in all classes and structures of this project.
 	template<class method = dmp::value::as_i64>
 	String dump() { return method()(*this); }
 

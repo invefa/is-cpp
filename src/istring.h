@@ -51,7 +51,7 @@ public:
 	explicit RefString(lstring lit, usize len);
 
 	//init by string-meta
-	explicit RefString(StringMeta& meta);
+	explicit RefString(StringMeta meta);
 
 	//clear set data to nullptr, set length to zero
 	void clear();

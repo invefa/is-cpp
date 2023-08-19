@@ -9,6 +9,7 @@ ISL_BEGIN
 struct Position {
 	usize line{ 1 };
 	usize column{ 1 };
+	String dump() const;
 };
 
 enum class TokenKind : ui8 {
@@ -31,7 +32,7 @@ struct Token {
 	Position	position{};
 	Value		value	{};
 
-	String dump() const;
+	String dump();
 };
 
 

@@ -14,3 +14,6 @@
 
 //Define this macro to enable output when memory operations.
 #define ISL_MANAGE_MEMORY_OPERATION_OUTPUT
+
+
+#define ISL_REPORT_BUFFER_SIZE 512

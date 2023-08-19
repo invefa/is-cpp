@@ -3,35 +3,38 @@
 
 ISL_BEGIN
 
+String Position::dump() const {
+	char buffer[64] = { 0 };
+	sprintf(buffer, "<%lu,%lu>", line, column);
+	return String(buffer);
+}
+
 TokenKindInfo token_kind_info_list[] = {
 #define enum_info(n, s) {#n, s},
 #include "itoken.inc"
 #undef enum_info
 };
 
-String Token::dump() const {
+String Token::dump() {
 	char buffer[256] = { 0 };
-	if (kind == TokenKind::l_real) {
-		sprintf(buffer, "kind:%-10s extract:%-8s value:%-18f pos:[%u,%u]",
-			token_kind_info_list[ui8(kind)].name, ~String(extract),
-			value.f64, position.line, position.column);
+	String val_dump;
+	switch (kind) {
+		using enum TokenKind;
+	case l_real:	val_dump = value.dump<dmp::value::as_f64> ();	break;
+	case l_int:		val_dump = value.dump<dmp::value::as_i64> ();	break;
+	case l_uint:	val_dump = value.dump<dmp::value::as_ui64>();	break;
+	case l_string:	val_dump = value.dump<dmp::value::as_str> ();	break;
+	default:		val_dump = "null";								break;
 	}
-	if (kind == TokenKind::l_int) {
-		sprintf(buffer, "kind:%-10s extract:%-8s value:%-18d pos:[%u,%u]",
-			token_kind_info_list[ui8(kind)].name, ~String(extract),
-			value.i32, position.line, position.column);
-	}
-	else if (kind == TokenKind::l_string) {
-		sprintf(buffer, "kind:%-10s extract:%-8s value:%-18s pos:[%u,%u]",
-			token_kind_info_list[ui8(kind)].name, ~String(extract),
-			~String(*value.rsp), position.line, position.column);
-	}
-	else {
-		sprintf(buffer, "kind:%-10s extract:%-8s value:%-18s pos:[%u,%u]",
-			token_kind_info_list[ui8(kind)].name, ~String(extract),
-			"null", position.line, position.column);
-	}
+	sprintf(buffer, "kind:%-10s extract:%-12s value:%-12s position:%s",
+		token_kind_info_list[ui8(kind)].name,
+		~String(extract),
+		~val_dump,
+		~position.dump()
+	);
 	return String(buffer);
 }
 
 ISL_END
+
+
