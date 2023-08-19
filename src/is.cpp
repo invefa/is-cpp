@@ -3,68 +3,112 @@
 #include "imemory.h"
 #include "iutils.h"
 #include "icontainers.h"
+#include "istring.h"
+#include "ivalue.h"
+#include "itoken.h"
 
-int main()
-{
-	using namespace is;
-	using namespace is::type;
-	using namespace is::memory;
+using namespace is;
+
+String genString(lstring str) {
+	return String(str);
+}
+
+int main() {
+
+	String str;
+	str = "123";
+	str = String("123456789");
+
+	Value val1;
+	Value val2;
+
+	val1.sp = new String("123");
+	val2.sp = new String("123");
+
+	printf("val1.is_equal(val2, cmp::value::as_str_fn)	: %d\n", val1.is_equal(val2, cmp::value::as_str_fn));
+	printf("val1.is_equal<cmp::value::as_i8>(val2)		: %d\n", val1.is_equal<cmp::value::as_i32>(val2));
+	printf("val1.is_equal<cmp::value::as_ptr>(val1)		: %d\n", val1.is_equal<cmp::value::as_ptr>(val1));
+	printf("%ld\n", 123123);
+
+	Token tok;
+	tok.kind = tok.add;
+	tok.position = { 1,4 };
+	tok.extract = "+";
+	printf("%s\n", ~tok.dump());
+
+	tok.kind = tok.l_int;
+	tok.position = { 4,12 };
+	tok.extract = "123";
+	tok.value.i64 = -1;
+	printf("%s\n", ~tok.dump());
+
+
+	delete val1.sp;
+	delete val2.sp;
+
+	//class base {
+	//protected:
+	//	i32 data;
+	//public:
+	//	base() { data = 0; }
+	//	i32 get_data() {
+	//		return data;
+	//	}
+	//};
+	//class obj : public base {
+	//public:
+	//	obj(base& b) {
+	//		data = b.get_data();
+	//	}
+	//	//obj(base b) {
+	//	//	data = b.get_data();
+	//	//}
+	//};
+	//class obj_ect : public base {
+	//public:
+	//	obj_ect() { data = 0; }
+	//	obj_ect(i32 d) { data = d; }
+	//};
+	//obj_ect obec(123);
+	//obj obp = obj(obec);
 	//FILE* fp = nullptr;
 	//errno_t err = fopen_s(&fp, "E:\\projects\\is\\script\\test.is", "r");
 	//is_assert(fp);
-
-#define printf_1(a)		printf("%d\n",a)
-#define printf_2(a,b)	printf("%d%d\n",a,b)
-#define printf_3(a,b,c) printf("%d%d%d\n",a,b,c)
-#define printf_(...)	_ISL_MACRO_OVERLOAD(printf,__VA_ARGS__)
-
-	_ISL_MACRO_FORWARD_CALL(printf, 1);
-	_ISL_MACRO_FORWARD_CALL(printf, 1, 2);
-	_ISL_MACRO_FORWARD_CALL(printf, 1, 2, 3);
-
-	printf_(1);
-	printf_(1, 2);
-	printf_(1, 2, 3);
-
-
-	println("awa");
-
-	isl_wssert(1 == 2, "one is not equal two.");
-	isl_wssert(1 == 2);
-
+//#define printf_1(a)		printf("%d\n",a)
+//#define printf_2(a,b)	printf("%d%d\n",a,b)
+//#define printf_3(a,b,c) printf("%d%d%d\n",a,b,c)
+//#define printf_(...)	_ISL_MACRO_OVERLOAD(printf,__VA_ARGS__)
+//
+//	_ISL_MACRO_FORWARD_CALL(printf, 1);
+//	_ISL_MACRO_FORWARD_CALL(printf, 1, 2);
+//	_ISL_MACRO_FORWARD_CALL(printf, 1, 2, 3);
+	//printf_(1);
+	//printf_(1, 2);
+	//printf_(1, 2, 3);
+	//println("awa");
+	//isl_wssert(1 == 2, "one is not equal two.");
+	//isl_wssert(1 == 2);
 	//isl_assert(1 == 2, "one is not equal two.");
 	//isl_assert(1 == 2);
-
-	map<int, int> m;
-	m[123] = 123;
-	printf("%d\n", m[123]);
-	hash_map<int, int> hm;
-	printf("%d\n", sizeof(decltype(hm)));
-	hm[1] = 2;
-	printf("%d\n", hm[1]);
-	hm.insert_or_assign(1, 6);
-	printf("%d\n", hm[1]);
-
-	vector<int> vector;
-	vector.push_back(1);
-
-	ISL_CALLOC_ARY(int, 12);
-
+	//Map<int, int> m;
+	//m[123] = 123;
+	//printf("%d\n", m[123]);
+	//HashMap<int, int> hm;
+	//printf("%d\n", sizeof(decltype(hm)));
+	//hm[1] = 2;
+	//printf("%d\n", hm[1]);
+	//hm.insert_or_assign(1, 6);
+	//printf("%d\n", hm[1]);
+	//Vector<int> vector;
+	//vector.push_back(1);
+	//isl_calloc_ary(int, 12);
 	//_ISL_MACRO_CALL_FORWARD(printf, 1, 2, 3);
-
 	// -> __ISL_MACRO_INVOKE(__ISL_MACRO_CONCAT(__ISL_MACRO_CONCAT(printf,_),__ISL_MACRO_GET_VARG_COUNT( 1, 2, 3)), 1, 2, 3)
-
 	// -> __ISL_MACRO_INVOKE_UNPACK(__ISL_MACRO_CONCAT_WRAP(__ISL_MACRO_CONCAT_WRAP(printf,_),__ISL_MACRO_GET_TENTH_ARG( 1, 2, 3,9,8,7,6,5,4,3,2,1,0)),( 1, 2, 3))
-
 	// -> __ISL_MACRO_CONCAT_WRAP(__ISL_MACRO_CONCAT_WRAP(printf,_),__ISL_MACRO_GET_TENTH_ARG_UNPACK(( 1, 2, 3,9,8,7,6,5,4,3,2,1,0)))( 1, 2, 3)
-
 	// -> __ISL_MACRO_CONCAT_IMPL(__ISL_MACRO_CONCAT_IMPL(printf,_),__ISL_MACRO_GET_TENTH_ARG_IMPL( 1, 2, 3,9,8,7,6,5,4,3,2,1,0))( 1, 2, 3)
-
 	// -> printf_3( 1, 2, 3)
-
 	//isl_assert(1 == 2);
-
-
 //#define __ISL_MACRO_INERT_1(_1) _1
 //#define __ISL_MACRO_INERT_2(_2) __ISL_MACRO_INERT_1(_2)
 //#define __ISL_MACRO_INERT_3(_3) __ISL_MACRO_INERT_2(_3)
@@ -99,11 +143,9 @@ int main()
 	//struct Custom {
 	//	int		a{};
 	//	cstring	b{};
-
 	//	inline Custom* init(int _a, cstring _b) {
 	//		a = _a, b = _b; return this;
 	//	}
-
 	//	cstring dump() {
 	//		constexpr is::type::usize buf_size = 64;
 	//		char* buf = ISL_MALLOC_ARY(char, buf_size);
@@ -115,52 +157,29 @@ int main()
 	//			a, b ? b : "<nullptr>");
 	//		return buf;
 	//	}
-
 	//	_ISL_GEN_DEFAULT_NEW_AND_DELETE_FN(Custom);
-
 	//	/*void* operator new(usize _unused_) {
 	//		return ISL_CALLOC(Custom);
 	//	}
-
 	//	void* operator new[](usize _total_size) {
 	//		return ISL_CALLOC_ARY(Custom, _total_size, NO_BASE);
 	//	}
-
 	//		void operator delete(void* ptr) {
 	//		ISL_FREE((Custom*)ptr);
 	//	}
-
 	//	void operator delete[](void* ptr) {
 	//		ISL_FREE_ARY((Custom*)ptr);
 	//	}*/
 	//};
-
-
 	//auto capn = new Custom[8];
-
 	//printf("global_malloced_memory_size: %d\n", memory::global_malloced_memory_size);
-
 	//ISL_FREE_ARY(capn);
-
 	//printf("global_malloced_memory_size: %d\n", memory::global_malloced_memory_size);
-
 	//isl_assert(false == true);
-
 	//printf("global_malloced_memory_size: %d\n", memory::global_malloced_memory_size);
-	class string {
-		char* data{};
-	public:
-		_ISL_DELETE_DEFAULT_MOVE_AND_COPY_FN(string);
-		_ISL_GEN_DEFAULT_NEW_AND_DELETE_FN(string);
-		string(){}
-		inline char* operator~() { return data; }
-	};
-
 	//string* str = new string;
 	//printf("str_data_ptr: %p\n", ~*str);
-
 	//usize* usp = ISL_CALLOC_ARY(usize, 8);
 	//isl_assert(usp);
-
 	//ISL_FREE_ARY(usp);
 }

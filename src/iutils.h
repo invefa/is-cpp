@@ -1,33 +1,55 @@
 #pragma once
 
-//seem unused ~
+//namespace define
 #define ISL_BEGIN namespace is {
 #define ISL_END	  }
 
-namespace is {
-	//base class to remove_reference.
-	template<typename T>
-	class remove_reference {
-	public: typedef T type;
-	};
+ISL_BEGIN
 
-	//This template class can remove reference modifiers of the specified type,
-	//and the result type is defined as remove_reference<...>::type.
-	template<typename T>
-	class remove_reference<T&> {
-	public: typedef T type;
-	};
+//base class to remove_reference.
+template<typename T>
+class remove_reference {
+public: typedef T type;
+};
+
+//This template class can remove reference modifiers of the specified type,
+//and the result type is defined as remove_reference<...>::type.
+template<typename T>
+class remove_reference<T&> {
+public: typedef T type;
+};
+
+//lvalue or rvalue to rvalue
+template <typename T>
+typename remove_reference<T>::type&& move(T&& v) noexcept {
+	return static_cast<typename remove_reference<T>::type&&>(v);
 }
+
+////perfect forwarding
+////forward lvalue as either lvalue or rvalue
+//template <typename T>
+//T&& forward(remove_reference<T>::type& val) noexcept {
+//	return static_cast<T&&>(val);
+//}
+//
+////perfect forwarding
+////forward rvalue as rvalue (not lvalue)
+//template <typename T>
+//T&& forward(remove_reference<T>::type&& val) noexcept {
+//	static_assert(!std::is_lvalue_reference_v<T>,
+//		"Cannot forward rvalue as lvalue.");
+//	return static_cast<T&&>(val);
+//}
 
 //Convert the pointer conversion to the down level base type.
 #define _ISL_CAST_PTR_TO_BASE_TYPE(_ptr)	is::remove_reference<decltype(*(_ptr))>::type
 
 //Remove the default move and copy functions that C++ considers self righteous.
-#define _ISL_DELETE_DEFAULT_MOVE_AND_COPY_FN(_type)	\
-_type(const _type&)				= delete;		\
-_type(_type&&)					= delete;		\
-_type& operator=(const _type&)	= delete;		\
-_type& operator=(_type&&)		= delete;
+#define _ISL_DELETE_DEFAULT_MOVE_AND_COPY_FN(_class)\
+_class(const _class&)				= delete;		\
+_class(_class&&)					= delete;		\
+_class& operator=(const _class&)	= delete;		\
+_class& operator=(_class&&)			= delete;
 
 //Print a line, overload of printf(...).
 //arg fmt must be literal string.
@@ -56,3 +78,6 @@ _type& operator=(_type&&)		= delete;
 
 #define  _ISL_MACRO_OVERLOAD(_fn,...) _ISL_MACRO_FORWARD_CALL(_fn,__VA_ARGS__)
 
+#define _CRT_SECURE_NO_WARNINGS too_2b
+
+ISL_END
